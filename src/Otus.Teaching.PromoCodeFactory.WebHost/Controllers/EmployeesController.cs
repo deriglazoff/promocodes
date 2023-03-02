@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
 using Otus.Teaching.PromoCodeFactory.Core.Abstractions.Repositories;
 using Otus.Teaching.PromoCodeFactory.Core.Domain.Administration;
@@ -80,6 +81,7 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpDelete("{id:guid}")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> DeleteEmployeeByIdAsync(Guid id)
         {
             await _employeeRepository.RemoveByIdAsync(id);
@@ -92,11 +94,14 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost("{id:guid}")]
+        [ProducesResponseType(typeof(Employee), (int)HttpStatusCode.OK)]
         public async Task<IActionResult> UpdateEmployeeByIdAsync(Guid id, [FromBody] EmployeeDto employee)
         {
-            await _employeeRepository.UpdateByIdAsync(new Employee() { Id=id});
+            var entity = employee.Adapt<Employee>();
+            entity.Id = id;
+            await _employeeRepository.UpdateByIdAsync(entity);
 
-            return Ok();
+            return Ok(entity);
         }
         /// <summary>
         /// Добавить данные сотрудника
@@ -106,7 +111,9 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
         [ProducesResponseType(typeof(Employee),(int)HttpStatusCode.OK)]
         public async Task<IActionResult> CreateEmployee([FromBody] EmployeeDto employee)
         {
-            var result = await _employeeRepository.Create(new Employee());
+            var entity = employee.Adapt<Employee>();
+
+            var result = await _employeeRepository.Create(entity);
 
             return Ok(result);
         }

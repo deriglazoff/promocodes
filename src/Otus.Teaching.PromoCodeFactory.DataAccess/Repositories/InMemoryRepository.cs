@@ -11,16 +11,16 @@ namespace Otus.Teaching.PromoCodeFactory.DataAccess.Repositories
         : IRepository<T>
         where T: BaseEntity
     {
-        protected IEnumerable<T> Data { get; set; }
+        protected List<T> Data { get; set; }
 
-        public InMemoryRepository(IEnumerable<T> data)
+        public InMemoryRepository(List<T> data)
         {
             Data = data;
         }
         
         public Task<IEnumerable<T>> GetAllAsync()
         {
-            return Task.FromResult(Data);
+            return Task.FromResult(Data.AsEnumerable());
         }
 
         public Task<T> GetByIdAsync(Guid id)
@@ -30,17 +30,21 @@ namespace Otus.Teaching.PromoCodeFactory.DataAccess.Repositories
 
         public Task<T> Create(T entity)
         {
-            throw new NotImplementedException();
+            Data.Add(entity);
+            return Task.FromResult(entity);
         }
 
         public Task RemoveByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            Data.Remove(Data.First(x => x.Id.Equals(id)));
+            return Task.CompletedTask;
         }
 
-        public Task<T> UpdateByIdAsync(T id)
+        public Task<T> UpdateByIdAsync(T entity)
         {
-            throw new NotImplementedException();
+            RemoveByIdAsync(entity.Id);
+            Create(entity);
+            return Task.FromResult(entity);
         }
     }
 }
