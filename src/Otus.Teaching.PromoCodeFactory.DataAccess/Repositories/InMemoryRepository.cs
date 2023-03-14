@@ -37,11 +37,8 @@ namespace Otus.Teaching.PromoCodeFactory.DataAccess.Repositories
 
         public Task RemoveByIdAsync(Guid id)
         {
-            var exist = Data.First(x => x.Id.Equals(id));
-            if (exist != null) 
-            { 
-                throw new FileNotFoundException("Элемент не найден"); //TODO CustomException 
-            }
+            var exist = Data.FirstOrDefault(x => x.Id.Equals(id)) 
+                ?? throw new FileNotFoundException("Элемент не найден");
             Data.Remove(exist);
             return Task.CompletedTask;
         }
