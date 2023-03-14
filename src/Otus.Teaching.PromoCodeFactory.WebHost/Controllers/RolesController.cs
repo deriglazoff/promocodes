@@ -27,12 +27,12 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public async Task<List<RoleItemResponse>> GetRolesAsync()
+        public async Task<List<RoleItemDto>> GetRolesAsync()
         {
             var roles = await _rolesRepository.GetAllAsync();
 
             var rolesModelList = roles.Select(x => 
-                new RoleItemResponse()
+                new RoleItemDto()
                 {
                     Id = x.Id,
                     Name = x.Name,
