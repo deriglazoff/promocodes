@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Otus.Teaching.PromoCodeFactory.Core.Abstractions.Repositories;
@@ -36,12 +37,18 @@ namespace Otus.Teaching.PromoCodeFactory.DataAccess.Repositories
 
         public Task RemoveByIdAsync(Guid id)
         {
-            Data.Remove(Data.First(x => x.Id.Equals(id)));
+            var exist = Data.First(x => x.Id.Equals(id));
+            if (exist != null) 
+            { 
+                throw new FileNotFoundException("Элемент не найден"); //TODO CustomException 
+            }
+            Data.Remove(exist);
             return Task.CompletedTask;
         }
 
         public Task<T> UpdateByIdAsync(T entity)
         {
+            //TODO Update mehod DbContext
             RemoveByIdAsync(entity.Id);
             Create(entity);
             return Task.FromResult(entity);

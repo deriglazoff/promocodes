@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -84,7 +85,15 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
         [ProducesResponseType((int)HttpStatusCode.OK)]
         public async Task<IActionResult> DeleteEmployeeByIdAsync(Guid id)
         {
-            await _employeeRepository.RemoveByIdAsync(id);
+            try //TODO Middleware or filter
+            {
+
+                await _employeeRepository.RemoveByIdAsync(id);
+            }
+            catch (FileNotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
             return Ok();
         }
@@ -99,7 +108,15 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
         {
             var entity = employee.Adapt<Employee>();
             entity.Id = id;
-            await _employeeRepository.UpdateByIdAsync(entity);
+            try
+            {
+                await _employeeRepository.UpdateByIdAsync(entity);
+
+            }
+            catch (FileNotFoundException ex)
+            {
+                return BadRequest(ex.Message);
+            }
 
             return Ok(entity);
         }
