@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Otus.Teaching.PromoCodeFactory.Core.Abstractions.Repositories;
@@ -11,21 +12,43 @@ namespace Otus.Teaching.PromoCodeFactory.DataAccess.Repositories
         : IRepository<T>
         where T: BaseEntity
     {
-        protected IEnumerable<T> Data { get; set; }
+        protected List<T> Data { get; set; }
 
-        public InMemoryRepository(IEnumerable<T> data)
+        public InMemoryRepository(List<T> data)
         {
             Data = data;
         }
         
         public Task<IEnumerable<T>> GetAllAsync()
         {
-            return Task.FromResult(Data);
+            return Task.FromResult(Data.AsEnumerable());
         }
 
         public Task<T> GetByIdAsync(Guid id)
         {
             return Task.FromResult(Data.FirstOrDefault(x => x.Id == id));
+        }
+
+        public Task<T> Create(T entity)
+        {
+            Data.Add(entity);
+            return Task.FromResult(entity);
+        }
+
+        public Task RemoveByIdAsync(Guid id)
+        {
+            var exist = Data.FirstOrDefault(x => x.Id.Equals(id)) 
+                ?? throw new FileNotFoundException("Элемент не найден");
+            Data.Remove(exist);
+            return Task.CompletedTask;
+        }
+
+        public Task<T> UpdateByIdAsync(T entity)
+        {
+            //TODO Update mehod DbContext
+            RemoveByIdAsync(entity.Id);
+            Create(entity);
+            return Task.FromResult(entity);
         }
     }
 }
