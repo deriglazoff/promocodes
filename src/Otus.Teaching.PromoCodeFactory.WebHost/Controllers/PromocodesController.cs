@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Otus.Teaching.PromoCodeFactory.Core.Abstractions.Repositories;
+using Otus.Teaching.PromoCodeFactory.Core.Domain.PromoCodeManagement;
 using Otus.Teaching.PromoCodeFactory.WebHost.Models;
 
 namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
@@ -14,17 +15,25 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
     public class PromocodesController
         : ControllerBase
     {
+
+        private readonly IRepository<PromoCode> _repository;
+
+        public PromocodesController(IRepository<PromoCode> repository)
+        {
+            _repository = repository;
+        }
+
         /// <summary>
         /// Получить все промокоды
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        public Task<ActionResult<List<PromoCodeShortResponse>>> GetPromocodesAsync()
+        public async Task<IActionResult> GetPromocodesAsync()
         {
-            //TODO: Получить все промокоды 
-            throw new NotImplementedException();
+            var result = await _repository.GetAllAsync();
+            return Ok(result);
         }
-        
+
         /// <summary>
         /// Создать промокод и выдать его клиентам с указанным предпочтением
         /// </summary>

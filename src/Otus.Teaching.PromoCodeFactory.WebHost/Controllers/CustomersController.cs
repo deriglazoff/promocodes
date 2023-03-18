@@ -1,7 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Otus.Teaching.PromoCodeFactory.Core.Abstractions.Repositories;
+using Otus.Teaching.PromoCodeFactory.Core.Domain.PromoCodeManagement;
 using Otus.Teaching.PromoCodeFactory.WebHost.Models;
 
 namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
@@ -14,18 +15,26 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
     public class CustomersController
         : ControllerBase
     {
-        [HttpGet]
-        public Task<ActionResult<CustomerShortResponse>> GetCustomersAsync()
+
+        private readonly IRepository<Customer> _repository;
+
+        public CustomersController(IRepository<Customer> repository)
         {
-            //TODO: Добавить получение списка клиентов
-            throw new NotImplementedException();
+            _repository = repository;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCustomersAsync()
+        {
+            var result = await _repository.GetAllAsync();
+            return Ok(result);
         }
         
         [HttpGet("{id}")]
-        public Task<ActionResult<CustomerResponse>> GetCustomerAsync(Guid id)
+        public async Task<IActionResult> GetCustomerAsync(Guid id)
         {
-            //TODO: Добавить получение клиента вместе с выданными ему промомкодами
-            throw new NotImplementedException();
+            var result = await _repository.GetByIdAsync(id);
+            return Ok(result);
         }
         
         [HttpPost]
@@ -43,10 +52,10 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
         }
         
         [HttpDelete]
-        public Task<IActionResult> DeleteCustomer(Guid id)
+        public async Task<IActionResult> DeleteCustomer(Guid id)
         {
-            //TODO: Удаление клиента вместе с выданными ему промокодами
-            throw new NotImplementedException();
+            await _repository.RemoveByIdAsync(id);
+            return Ok();
         }
     }
 }
