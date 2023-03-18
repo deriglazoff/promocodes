@@ -14,9 +14,9 @@ namespace Otus.Teaching.PromoCodeFactory.DataAccess.Repositories
     {
         protected List<T> Data { get; set; }
 
-        public InMemoryRepository(List<T> data)
+        public InMemoryRepository(IEnumerable<T> data)
         {
-            Data = data;
+            Data = data.ToList();
         }
         
         public Task<IEnumerable<T>> GetAllAsync()
@@ -37,7 +37,7 @@ namespace Otus.Teaching.PromoCodeFactory.DataAccess.Repositories
 
         public Task RemoveByIdAsync(Guid id)
         {
-            var exist = Data.FirstOrDefault(x => x.Id.Equals(id)) 
+            var exist = Data.FirstOrDefault(x => x.Id.Equals(id))
                 ?? throw new FileNotFoundException("Элемент не найден");
             Data.Remove(exist);
             return Task.CompletedTask;
