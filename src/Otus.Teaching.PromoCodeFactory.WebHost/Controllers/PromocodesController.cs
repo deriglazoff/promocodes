@@ -1,8 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Otus.Teaching.PromoCodeFactory.Core.Abstractions.Repositories;
-using Otus.Teaching.PromoCodeFactory.Core.Domain.PromoCodeManagement;
+using Otus.Teaching.PromoCodeFactory.DataAccess.Repositories;
 using Otus.Teaching.PromoCodeFactory.WebHost.Models;
 
 namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
@@ -16,9 +14,9 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
         : ControllerBase
     {
 
-        private readonly IRepository<PromoCode> _repository;
+        private readonly IUnitOfWork _repository;
 
-        public PromocodesController(IRepository<PromoCode> repository)
+        public PromocodesController(IUnitOfWork repository)
         {
             _repository = repository;
         }
@@ -30,7 +28,7 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPromocodesAsync()
         {
-            var result = await _repository.GetAllAsync();
+            var result = await _repository.PromoCode.GetAllAsync();
             return Ok(result);
         }
 
@@ -39,10 +37,10 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpPost]
-        public Task<IActionResult> GivePromoCodesToCustomersWithPreferenceAsync(GivePromoCodeRequest request)
+        public async Task<IActionResult> GivePromoCodesToCustomersWithPreferenceAsync(GivePromoCodeRequest request)
         {
-            //TODO: Создать промокод и выдать его клиентам с указанным предпочтением
-            throw new NotImplementedException();
+            _repository.GivePromocodesToCustomersWithPreferenceAsync(request);
+            return Ok();
         }
     }
 }

@@ -30,6 +30,7 @@ namespace Otus.Teaching.PromoCodeFactory.DataAccess.Repositories
         public async Task<T> GetByIdAsync(Guid id)
         {
             var entity = await _entitySet.FirstOrDefaultAsync(x => x.Id == id);
+            _entitySet.Load();
 
             return entity;
         }

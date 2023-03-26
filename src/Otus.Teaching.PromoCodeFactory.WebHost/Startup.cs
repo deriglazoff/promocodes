@@ -6,6 +6,7 @@ using Microsoft.Extensions.Hosting;
 using Otus.Teaching.PromoCodeFactory.Core.Abstractions.Repositories;
 using Otus.Teaching.PromoCodeFactory.DataAccess;
 using Otus.Teaching.PromoCodeFactory.DataAccess.Repositories;
+using Otus.Teaching.PromoCodeFactory.WebHost.Example;
 
 namespace Otus.Teaching.PromoCodeFactory.WebHost
 {
@@ -19,12 +20,10 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost
             services.AddDbContext<DataContext>(x => x.UseSqlite("Filename=MyDatabase.db"));
 
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            services.AddOpenApiDocument(options =>
-            {
-                options.Title = "PromoCode Factory API Doc";
-                options.Version = "1.0";
-            });
+            services.AddSwaggerService();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,12 +40,9 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost
                 app.UseHsts();
             }
 
-            app.UseOpenApi();
-            app.UseSwaggerUi3(x =>
-            {
-                x.DocExpansion = "list";
-            });
-            
+            app.UseSwagger(s => s.SerializeAsV2 = false);
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PromoCodeFactory v1"));
+
             app.UseHttpsRedirection();
 
             app.UseRouting();

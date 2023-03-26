@@ -14,6 +14,7 @@ namespace Otus.Teaching.PromoCodeFactory.Core.Domain.PromoCodeManagement
         public string Email { get; set; }
 
         public IEnumerable<PromoCode> PromoCodes { get; set; }
- 
+
+        public IEnumerable<Preference> Preferences { get; set; }
     }
 }
