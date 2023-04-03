@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -29,7 +30,8 @@ namespace Otus.Teaching.PromoCodeFactory.DataAccess.Repositories
 
         public async Task<T> GetByIdAsync(Guid id)
         {
-            var entity = await _entitySet.FirstOrDefaultAsync(x => x.Id == id);
+            var entity = await _entitySet.FirstOrDefaultAsync(x => x.Id == id)
+                ?? throw new FileNotFoundException("Зпись не найдена");
             _entitySet.Load();
 
             return entity;
@@ -51,6 +53,8 @@ namespace Otus.Teaching.PromoCodeFactory.DataAccess.Repositories
 
         public async Task<T> UpdateByIdAsync(T entity)
         {
+            _ = await _entitySet.AsNoTracking().FirstOrDefaultAsync(x => x.Id == entity.Id)
+                ?? throw new FileNotFoundException("Зпись не найдена");
             _dataContext.Entry(entity).State = EntityState.Modified;
             await _dataContext.SaveChangesAsync();
             return entity;
@@ -58,7 +62,8 @@ namespace Otus.Teaching.PromoCodeFactory.DataAccess.Repositories
 
         public async Task RemoveByIdAsync(Guid id)
         {
-            var record = _entitySet.Find(id);
+            var record = _entitySet.Find(id)
+                ?? throw new FileNotFoundException("Зпись не найдена");
             _entitySet.Remove(record);
             await _dataContext.SaveChangesAsync();
         }

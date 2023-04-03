@@ -46,6 +46,7 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            app.UseMiddleware<Filters.ExceptionHandlerMiddleware>();
 
             app.UseEndpoints(endpoints =>
             {

@@ -50,6 +50,7 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
         public async Task<IActionResult> EditCustomersAsync(Guid id, CreateOrEditCustomerRequest request)
         {
             var entity = request.Adapt<Customer>();
+            entity.Id = id;
             var result = await _repository.UpdateByIdAsync(entity);
             return Ok(result);
         }
