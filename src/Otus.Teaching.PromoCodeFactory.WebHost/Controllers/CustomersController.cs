@@ -35,9 +35,13 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
         public async Task<IActionResult> GetCustomerAsync(Guid id)
         {
             var result = await _repository.GetByIdAsync(id);
+            if (result == null)
+            {
+                return BadRequest("Зпись не найдена");
+            }
             return Ok(result);
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> CreateCustomerAsync(CreateOrEditCustomerRequest request)
         {

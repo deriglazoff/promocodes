@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Otus.Teaching.PromoCodeFactory.Core.Abstractions.Repositories;
@@ -30,8 +31,9 @@ namespace Otus.Teaching.PromoCodeFactory.DataAccess.Repositories
 
         public async Task<T> GetByIdAsync(Guid id)
         {
-            var entity = await _entitySet.FirstOrDefaultAsync(x => x.Id == id)
-                ?? throw new FileNotFoundException("Зпись не найдена");
+            var entity = await _entitySet.FirstOrDefaultAsync(x => x.Id == id); 
+            if (entity == null) 
+                return null;
             _entitySet.Load();
 
             return entity;
