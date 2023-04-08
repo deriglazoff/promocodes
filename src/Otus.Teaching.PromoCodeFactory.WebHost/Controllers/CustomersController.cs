@@ -1,7 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using Mapster;
 using Microsoft.AspNetCore.Mvc;
+using Otus.Teaching.PromoCodeFactory.Core.Abstractions.Repositories;
+using Otus.Teaching.PromoCodeFactory.Core.Domain.PromoCodeManagement;
 using Otus.Teaching.PromoCodeFactory.WebHost.Models;
 
 namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
@@ -14,39 +16,54 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
     public class CustomersController
         : ControllerBase
     {
-        [HttpGet]
-        public Task<ActionResult<CustomerShortResponse>> GetCustomersAsync()
+
+        private readonly IRepository<Customer> _repository;
+
+        public CustomersController(IRepository<Customer> repository)
         {
-            //TODO: Добавить получение списка клиентов
-            throw new NotImplementedException();
+            _repository = repository;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCustomersAsync()
+        {
+            var result = await _repository.GetAllAsync();
+            return Ok(result);
         }
         
         [HttpGet("{id}")]
-        public Task<ActionResult<CustomerResponse>> GetCustomerAsync(Guid id)
+        public async Task<IActionResult> GetCustomerAsync(Guid id)
         {
-            //TODO: Добавить получение клиента вместе с выданными ему промомкодами
-            throw new NotImplementedException();
+            var result = await _repository.GetByIdAsync(id);
+            if (result == null)
+            {
+                return BadRequest("Зпись не найдена");
+            }
+            return Ok(result);
         }
-        
+
         [HttpPost]
-        public Task<IActionResult> CreateCustomerAsync(CreateOrEditCustomerRequest request)
+        public async Task<IActionResult> CreateCustomerAsync(CreateOrEditCustomerRequest request)
         {
-            //TODO: Добавить создание нового клиента вместе с его предпочтениями
-            throw new NotImplementedException();
+            var entity = request.Adapt<Customer>();
+            var result = await _repository.Create(entity);
+            return Ok(result);
         }
         
         [HttpPut("{id}")]
-        public Task<IActionResult> EditCustomersAsync(Guid id, CreateOrEditCustomerRequest request)
+        public async Task<IActionResult> EditCustomersAsync(Guid id, CreateOrEditCustomerRequest request)
         {
-            //TODO: Обновить данные клиента вместе с его предпочтениями
-            throw new NotImplementedException();
+            var entity = request.Adapt<Customer>();
+            entity.Id = id;
+            var result = await _repository.UpdateByIdAsync(entity);
+            return Ok(result);
         }
         
         [HttpDelete]
-        public Task<IActionResult> DeleteCustomer(Guid id)
+        public async Task<IActionResult> DeleteCustomer(Guid id)
         {
-            //TODO: Удаление клиента вместе с выданными ему промокодами
-            throw new NotImplementedException();
+            await _repository.RemoveByIdAsync(id);
+            return Ok();
         }
     }
 }

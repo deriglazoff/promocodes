@@ -1,6 +1,6 @@
 ﻿namespace Otus.Teaching.PromoCodeFactory.WebHost.Models
 {
-    public class GivePromoCodeRequest : IGivePromoCodeModel
+    public interface IGivePromoCodeModel
     {
         public string ServiceInfo { get; set; }
 
