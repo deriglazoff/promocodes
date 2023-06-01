@@ -15,11 +15,12 @@ participant req as request
   customer->>Gateway:Фото автомобиля
   Gateway->>anti:Прокси
   anti->>customer:Успех
-  deactivate customer
     rect GoldenRod
     Note over customer, req:Повторяется с каждым заказом
     customer->>Gateway:В очередь
     Gateway->>req:Прокси
+    req->>Сalc:Расчет заказа
+    Сalc->>req:Заказ найден
     req->>customer:Заказ найден
     customer->>Gateway:Поездка окончена
     Gateway->>req:Прокси
