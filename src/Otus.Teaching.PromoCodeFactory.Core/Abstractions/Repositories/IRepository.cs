@@ -8,14 +8,16 @@ namespace Otus.Teaching.PromoCodeFactory.Core.Abstractions.Repositories
     public interface IRepository<T>
         where T: BaseEntity
     {
-        public Task<IEnumerable<T>> GetAllAsync();
+        Task<IEnumerable<T>> GetAllAsync();
         
-        public Task<T> GetByIdAsync(Guid id);
+        Task<T> GetByIdAsync(Guid id);
+        
+        Task<IEnumerable<T>> GetRangeByIdsAsync(List<Guid> ids);
 
-        public Task<T> Create(T entity);
+        Task AddAsync(T entity);
 
-        public Task RemoveByIdAsync(Guid id);
+        Task UpdateAsync(T entity);
 
-        public Task<T> UpdateByIdAsync(T entity);
+        Task DeleteAsync(T entity);
     }
 }

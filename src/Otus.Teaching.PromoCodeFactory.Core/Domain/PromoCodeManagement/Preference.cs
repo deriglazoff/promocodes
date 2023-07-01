@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System;
 
 namespace Otus.Teaching.PromoCodeFactory.Core.Domain.PromoCodeManagement
 {
@@ -6,7 +6,5 @@ namespace Otus.Teaching.PromoCodeFactory.Core.Domain.PromoCodeManagement
         :BaseEntity
     {
         public string Name { get; set; }
-
-        public IEnumerable<Customer> Customers { get; set; }
     }
 }

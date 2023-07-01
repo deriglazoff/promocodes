@@ -2,39 +2,47 @@
 using Otus.Teaching.PromoCodeFactory.Core.Domain.Administration;
 using Otus.Teaching.PromoCodeFactory.Core.Domain.PromoCodeManagement;
 using Otus.Teaching.PromoCodeFactory.DataAccess.Data;
-using System.Linq;
 
 namespace Otus.Teaching.PromoCodeFactory.DataAccess
 {
     public class DataContext
         : DbContext
     {
+        public DbSet<PromoCode> PromoCodes { get; set; }
 
-        public DataContext(DbContextOptions<DataContext> options)
-        : base(options)
+        public DbSet<Customer> Customers { get; set; }
+        
+        public DbSet<Preference> Preferences { get; set; }
+        
+        public DbSet<Role> Roles { get; set; }
+        
+        public DbSet<Employee> Employees { get; set; }
+        
+        public DbSet<Partner> Partners { get; set; }
+
+        public DataContext()
         {
+            
+        }
+        
+        public DataContext(DbContextOptions<DataContext> options)
+            : base(options)
+        {
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-            modelBuilder.Entity<Role>().HasData(FakeDataFactory.Roles);
-            modelBuilder.Entity<Preference>().HasData(FakeDataFactory.Preferences);
-            modelBuilder.Entity<Customer>().HasData(FakeDataFactory.Customers);
-            modelBuilder.Entity<Customer>()
-                .HasMany<Preference>(x => x.Preferences)
-                .WithMany(c => c.Customers)
-                .UsingEntity(x => x.ToTable("CustomerPreference")
-                .HasData(new
-                {
-                    CustomersId = FakeDataFactory.Customers.First(x => x.Email == "ivan_sergeev@mail.ru").Id,
-                    PreferencesId = FakeDataFactory.Preferences.First(x => x.Name == "Семья").Id
-                }));
-
-            modelBuilder.Entity<Employee>().HasOne<Role>(x => x.Role).WithMany().HasForeignKey(k => k.RoleId);
-            modelBuilder.Entity<Employee>().HasData(FakeDataFactory.Employees);
-
-            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<CustomerPreference>()
+                .HasKey(bc => new { bc.CustomerId, bc.PreferenceId });  
+            modelBuilder.Entity<CustomerPreference>()
+                .HasOne(bc => bc.Customer)
+                .WithMany(b => b.Preferences)
+                .HasForeignKey(bc => bc.CustomerId);  
+            modelBuilder.Entity<CustomerPreference>()
+                .HasOne(bc => bc.Preference)
+                .WithMany()
+                .HasForeignKey(bc => bc.PreferenceId); 
         }
     }
 }
