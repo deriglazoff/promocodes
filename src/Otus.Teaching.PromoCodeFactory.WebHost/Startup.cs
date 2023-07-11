@@ -1,21 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Castle.Core.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
 using Otus.Teaching.PromoCodeFactory.Core.Abstractions.Repositories;
-using Otus.Teaching.PromoCodeFactory.Core.Domain.Administration;
 using Otus.Teaching.PromoCodeFactory.DataAccess;
 using Otus.Teaching.PromoCodeFactory.DataAccess.Data;
 using Otus.Teaching.PromoCodeFactory.DataAccess.Repositories;
-using IConfiguration = Microsoft.Extensions.Configuration.IConfiguration;
+using Otus.Teaching.PromoCodeFactory.Core.UseCases;
+using Microsoft.Extensions.Configuration;
 
 namespace Otus.Teaching.PromoCodeFactory.WebHost
 {
@@ -34,8 +27,12 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost
         {
             services.AddControllers().AddMvcOptions(x=> 
                 x.SuppressAsyncSuffixInActionNames = false);
+
+
             services.AddScoped(typeof(IRepository<>), typeof(EfRepository<>));
             services.AddScoped<IDbInitializer, EfDbInitializer>();
+            services.AddScoped<PartnersCase>();
+            
             services.AddDbContext<DataContext>(x =>
             {
                 x.UseSqlite("Filename=PromoCodeFactoryDb.sqlite");

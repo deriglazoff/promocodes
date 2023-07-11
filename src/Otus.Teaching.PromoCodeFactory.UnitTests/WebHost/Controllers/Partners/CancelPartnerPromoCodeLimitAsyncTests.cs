@@ -78,7 +78,7 @@ namespace Otus.Teaching.PromoCodeFactory.UnitTests.WebHost.Controllers.Partners
             var result = await _partnersController.CancelPartnerPromoCodeLimitAsync(partnerId);
  
             // Assert
-            result.Should().BeAssignableTo<BadRequestObjectResult>();
+            result.Should().BeAssignableTo<BadRequestResult>();
         }
     }
 }

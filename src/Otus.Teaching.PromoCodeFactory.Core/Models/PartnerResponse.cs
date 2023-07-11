@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using Otus.Teaching.PromoCodeFactory.Core.Domain.PromoCodeManagement;
 
-namespace Otus.Teaching.PromoCodeFactory.WebHost.Models
+namespace Otus.Teaching.PromoCodeFactory.Domain.Models
 {
     public class PartnerResponse
     {
