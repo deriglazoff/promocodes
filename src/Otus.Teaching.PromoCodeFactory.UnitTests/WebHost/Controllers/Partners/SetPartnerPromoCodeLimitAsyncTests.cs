@@ -11,7 +11,6 @@ using Xunit;
 using Otus.Teaching.PromoCodeFactory.Domain.Models;
 using System.Linq;
 using Otus.Teaching.PromoCodeFactory.UnitTests.Data;
-using Otus.Teaching.PromoCodeFactory.Core.UseCases;
 
 namespace Otus.Teaching.PromoCodeFactory.UnitTests.WebHost.Controllers.Partners
 {
@@ -25,10 +24,7 @@ namespace Otus.Teaching.PromoCodeFactory.UnitTests.WebHost.Controllers.Partners
             var fixture = new Fixture().Customize(new AutoMoqCustomization());
 
             _partnersRepositoryMock = fixture.Freeze<Mock<IRepository<Partner>>>();
-            var a = new PartnersCase(_partnersRepositoryMock.Object);
-            var d = new PartnersController(a);
-            _partnersController = d;
-            //_partnersController = fixture.Build<PartnersController>().OmitAutoProperties().Create();
+            _partnersController = fixture.Build<PartnersController>().OmitAutoProperties().Create();
         }
 
                 
