@@ -4,6 +4,6 @@ namespace Otus.Teaching.Pcf.Administration.Core.Domain
 {
     public class BaseEntity
     {
-        public Guid Id { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
     }
 }

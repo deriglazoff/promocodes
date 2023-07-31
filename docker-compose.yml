@@ -8,18 +8,19 @@ services:
     ports:
       - "8091:80"
     environment:
-      - "ConnectionStrings:PromocodeFactoryAdministrationDb=Host=promocode-factory-administration-db;Database=promocode_factory_administration_db;Username=postgres;Password=docker"          
+      - "ConnectionStrings:MongoDb=mongodb://MongoDb:MongoDb@promocode-factory-administration-mongodb:27017/?authSource=admin"          
     depends_on: 
-      - promocode-factory-administration-db
+      - promocode-factory-administration-mongodb
   #Administration Db
-  promocode-factory-administration-db:
-    image: "postgres:9.6.17"
-    container_name: 'promocode-factory-administration-db'
+  promocode-factory-administration-mongodb:
+    image: "mongo:6-jammy"
+    container_name: 'promocode-factory-administration-mongodb'
     restart: always 
     ports:
-      - 5433:5432
-    environment: 
-      - POSTGRES_PASSWORD=docker
+      - '27018:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: MongoDb
+      MONGO_INITDB_ROOT_PASSWORD: MongoDb
 
   #ReceivingFromPartner Api
   promocode-factory-receiving-from-partner-api:
@@ -62,5 +63,5 @@ services:
     restart: always 
     ports:
       - 5435:5432
-    environment: 
+    environment:
       - POSTGRES_PASSWORD=docker
