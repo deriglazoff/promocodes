@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Otus.Teaching.PromoCodeFactory.Core.Abstractions.Repositories;
 using Otus.Teaching.PromoCodeFactory.Core.Domain.PromoCodeManagement;
+using Otus.Teaching.PromoCodeFactory.WebHost.Mappers;
 using Otus.Teaching.PromoCodeFactory.WebHost.Models;
 
 namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
@@ -60,21 +61,11 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
             var preferences = await _preferenceRepository
                 .GetRangeByIdsAsync(request.PreferenceIds);
 
-            var customer = new Customer()
-            {
-                Email = request.Email,
-                FirstName = request.FirstName,
-                LastName = request.LastName,
-            };
-            customer.Preferences = preferences.Select(x => new CustomerPreference()
-            {
-                Customer = customer,
-                Preference = x
-            }).ToList();
+            Customer customer = CustomerMapper.MapFromModel(request, preferences);
             
             await _customerRepository.AddAsync(customer);
 
-            return CreatedAtAction(nameof(GetCustomerAsync), new {id = customer.Id}, null);
+            return CreatedAtAction(nameof(GetCustomerAsync), new {id = customer.Id}, customer.Id);
         }
         
         [HttpPut("{id:guid}")]
@@ -87,15 +78,7 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost.Controllers
             
             var preferences = await _preferenceRepository.GetRangeByIdsAsync(request.PreferenceIds);
             
-            customer.Email = request.Email;
-            customer.FirstName = request.FirstName;
-            customer.LastName = request.LastName;
-            customer.Preferences.Clear();
-            customer.Preferences = preferences.Select(x => new CustomerPreference()
-            {
-                Customer = customer,
-                Preference = x
-            }).ToList();
+            CustomerMapper.MapFromModel(request, preferences, customer);
 
             await _customerRepository.UpdateAsync(customer);
 

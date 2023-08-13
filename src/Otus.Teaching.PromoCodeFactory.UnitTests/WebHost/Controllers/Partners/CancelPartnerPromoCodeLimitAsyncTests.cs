@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.Collections.Generic;
 using AutoFixture;
 using AutoFixture.AutoMoq;
@@ -78,7 +78,7 @@ namespace Otus.Teaching.PromoCodeFactory.UnitTests.WebHost.Controllers.Partners
             var result = await _partnersController.CancelPartnerPromoCodeLimitAsync(partnerId);
  
             // Assert
-            result.Should().BeAssignableTo<BadRequestResult>();
+            result.Should().BeAssignableTo<BadRequestObjectResult>();
         }
     }
 }

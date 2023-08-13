@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using Otus.Teaching.PromoCodeFactory.Core.Abstractions.Repositories;
 using Otus.Teaching.PromoCodeFactory.Core.Domain;
 
@@ -39,10 +41,19 @@ namespace Otus.Teaching.PromoCodeFactory.DataAccess.Repositories
             return entities;
         }
 
+        public async Task<T> GetFirstWhere(Expression<Func<T, bool>> predicate)
+        {
+            return await _dataContext.Set<T>().FirstOrDefaultAsync(predicate);
+        }
+
+        public async Task<IEnumerable<T>> GetWhere(Expression<Func<T, bool>> predicate)
+        {
+            return await _dataContext.Set<T>().Where(predicate).ToListAsync();
+        }
+
         public async Task AddAsync(T entity)
         {
             await _dataContext.Set<T>().AddAsync(entity);
-
             await _dataContext.SaveChangesAsync();
         }
 
