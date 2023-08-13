@@ -1,18 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Castle.Core.Configuration;
+using GraphQL;
+using GraphQL.MicrosoftDI;
+using GraphQL.Types;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Configuration;
+using MyHotel.GraphQL;
 using Otus.Teaching.PromoCodeFactory.Core.Abstractions.Gateways;
 using Otus.Teaching.PromoCodeFactory.Core.Abstractions.Repositories;
-using Otus.Teaching.PromoCodeFactory.Core.Domain.Administration;
 using Otus.Teaching.PromoCodeFactory.DataAccess;
 using Otus.Teaching.PromoCodeFactory.DataAccess.Data;
 using Otus.Teaching.PromoCodeFactory.DataAccess.Repositories;
@@ -52,6 +48,12 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost
                 options.Title = "PromoCode Factory API Doc";
                 options.Version = "1.0";
             });
+            // register graphQL
+            services.AddScoped<CustomersQuery>();
+            services.AddScoped<CustomersMutation>();
+            services.AddScoped<ISchema, CustomerSchema>(services => new CustomerSchema(new SelfActivatingServiceProvider(services)));
+            
+            services.AddGraphQL(x =>x.AddSystemTextJson());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,6 +67,8 @@ namespace Otus.Teaching.PromoCodeFactory.WebHost
             {
                 app.UseHsts();
             }
+            app.UseGraphQL();
+            app.UseGraphQLAltair();
 
             app.UseOpenApi();
             app.UseSwaggerUi3(x =>

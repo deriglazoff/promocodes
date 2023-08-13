@@ -2,7 +2,7 @@
   "profiles": {
     "Otus.Teaching.PromocodeFactory.WebHost": {
       "commandName": "Project",
-      "launchUrl": "swagger/index.html",
+      "launchUrl": "ui/Altair",
       "launchBrowser": true,
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
